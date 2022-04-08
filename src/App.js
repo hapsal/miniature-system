@@ -37,44 +37,99 @@ const App = () => {
     return <div>Loading...</div>;
   } else {
   return(
-    <div class="container">
-    <div class="header">
+    <>
+      <header>
         <h1>Säätutka</h1>
+      </header>
+
+        <div className='cities'>
+          <div class="dropdown">
+            <button class="dropButton"> 
+              Kaikki kaupungit
+            </button>
+            <div class="dropdown-content">
+              <a href='#'>Tampere</a>
+              <a href='#'>Jyväskylä</a>
+              <a href='#'>Kuopio</a>
+              <a href='#'>Espoo</a>
+            </div>
+          </div>
+        </div>
+
+      <div class="container">
+        <article class="grid-item grid-col-span-2">
+          <h2>{weatherData.name}</h2>
+          <p class="desc">{weatherData.weather[0].description} </p>
+        </article>
+        <article class="grid-item">
+          <img class="current-icon" src={`http://openweathermap.org/img/w/${weatherData.weather[0].icon}.png`}alt="weather status icon" />
+          <p class="temp">{weatherData.main.temp} °C</p>
+        </article>
+        <article class="grid-item  grid-col-span-2">
+          <h3>Päivä</h3>
+          <p class="text">11:11</p>
+        </article>
+        <article class="grid-item">
+          <p class="text">Wind: {weatherData.wind.speed} m/s</p>
+          <p class="text">Humidity: {weatherData.main.humidity} %</p>
+          <p class="text">Precipation (3h): </p>
+        </article>
       </div>
-      <div class="dropdown">
-        <form action="#">
-          <label>Kaupunki</label>
-          <select name="city"> 
-            <option value="Tampere">Tampere</option>
-            <option value="Jyväskylä">Jyväskylä</option>
-            <option value="Kuopio">Kuopio</option>
-            <option value="Espoo">Espoo</option>
-          </select>
-        </form>
+
+      <div className="forecast-container">
+        <article class="forecast-item">
+          <p>Kello</p>
+          <p>Ikoni</p>
+          <h4>LT</h4>
+          <div class="forecast-extra-info">
+            <p>Tuuli</p>
+            <p>Kosteus</p>
+            <p>5 mm</p>
+          </div>
+        </article>
+        <article class="forecast-item">
+          <p>Kello</p>
+          <p>Ikoni</p>
+          <h4>LT</h4>
+          <div class="forecast-extra-info">
+            <p>Tuuli</p>
+            <p>Kosteus</p>
+            <p>5 mm</p>
+          </div>
+        </article>
+        <article class="forecast-item">
+          <p>Kello</p>
+          <p>Ikoni</p>
+         <h4>LT</h4>
+          <div class="forecast-extra-info">
+            <p>Tuuli</p>
+            <p>Kosteus</p>
+            <p>5 mm</p>
+          </div>
+        </article>
+        <article class="forecast-item">
+          <p>Kello</p>
+          <p>Ikoni</p>
+          <h4>LT</h4>
+          <div class="forecast-extra-info">
+            <p>Tuuli</p>
+            <p>Kosteus</p>
+            <p>5 mm</p>
+          </div>
+        </article>
+        <article class="forecast-item">
+          <p>Kello</p>
+          <p>Ikoni</p>
+          <h4>LT</h4>
+          <div class="forecast-extra-info">
+            <p>Tuuli</p>
+            <p>Kosteus</p>
+            <p>5 mm</p>
+          </div>
+        </article>
       </div>
-      <div>
-        <h2>Kaupunki</h2>
-        <p>Säätiedot (Tämänhetkinen)</p>
-        <ul>
-          <li>{weatherData.name}</li>
-          <li>Temp: {weatherData.main.temp} °C</li>
-          <li>Wind: {weatherData.wind.speed} m/s</li>
-          <li>Humidity: {weatherData.main.humidity} %</li>
-          <li>{weatherData.weather[0].description} 
-            <img
-              src={`http://openweathermap.org/img/w/${weatherData.weather[0].icon}.png`}
-              alt="weather status icon"
-              className="weather-icon"
-            />
-          </li>
-        </ul>
-      </div>
-      <div>
-        <h2>3h ennusteet</h2>
-        <ul>
-        </ul>
-      </div>
-    </div>
+
+    </>
   )
   }
 }
