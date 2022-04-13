@@ -1,138 +1,59 @@
 import './App.css'
 import { useState, useEffect } from 'react';
+import Navigation from './components/Navigation';
+import WeatherCard from './components/WeatherCard';
+import axios from 'axios';
 
 const App = () => {
+  const [location, setLocation] = useState('')
   const [error, setError] = useState(null);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [weatherData, setWeatherData] = useState([]);
-  const [forecastData, setForecastData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [currentWeatherdata, setcurrentWeatherdata] = useState([]);
+  const [forecastData, setforecastData] = useState([]);
 
-  // Current Weather API: https://api.openweathermap.org/data/2.5/weather?id={CITY ID}&appid={API key}
-  // IDS: Tampere: 634963, Jyväskylä: 655195, Kuopio: 650225, Espoo: 660129
-  // 
-  // Forecast weather API: https://api.openweathermap.org/data/2.5/forecast?id={CITY ID}&appid={API key}
+  const apiKey = ''
+
+  let currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?id=${location}&appid=${apiKey}&units=metric`
+  let forecastWeatherUrl = `https://api.openweathermap.org/data/2.5/forecast?id=${location}&appid=${apiKey}&units=metric`
+
   useEffect(() => {
-    fetch("")
-      .then(res => res.json())
-      .then(
-        (result) => {
-          setIsLoaded(true);
-          setWeatherData(result);
-        },
-        (error) => {
-          setIsLoaded(true);
-          setError(error);
-        }
-      )
-  }, [])
+    const fetchApis = async () => {
+      Promise.all([await axios.get(currentWeatherUrl), await axios.get(forecastWeatherUrl)])
+        .then(responses => {
+          setcurrentWeatherdata(responses[0].data)
+          setforecastData(responses[1].data)
+          setError(null)
+        })
+        .catch(error => {
+          console.error(error)
+        })
+        setLoading(false)
+    }
+    fetchApis();
+  }, [currentWeatherUrl, forecastWeatherUrl])
+  
+    const handleClick = (id) => {
+      if (id === 'allCities') {
+        console.log('helo')
+      }
+      setLocation(id)
+    }
 
-  console.log(weatherData)
+    return(
+      <>
+        <header>
+          <h1>Säätutka</h1>
+        </header>
 
-  //let unixDate = new Date(weatherData.dt * 1000).toISOString()
-  //const convertedDate = new Intl.DateTimeFormat('fi-FI', {dateStyle: 'full', timeStyle: 'long'}).format(unixDate)
+        {loading && <div className='container'>Loading data...</div>}
+        {error && (<div className='container'>`There is a problem fetching the data ${error}`</div>)}
 
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  } else if (!isLoaded) {
-    return <div>Loading...</div>;
-  } else {
-  return(
-    <>
-      <header>
-        <h1>Säätutka</h1>
-      </header>
+        <Navigation handleClick={handleClick} />
 
-        <div className='cities'>
-          <div class="dropdown">
-            <button class="dropButton"> 
-              Kaikki kaupungit
-            </button>
-            <div class="dropdown-content">
-              <a href='#'>Tampere</a>
-              <a href='#'>Jyväskylä</a>
-              <a href='#'>Kuopio</a>
-              <a href='#'>Espoo</a>
-            </div>
-          </div>
-        </div>
+        {(typeof currentWeatherdata.main != 'undefined' ? (<WeatherCard weatherData={currentWeatherdata} forecastData={forecastData}/>) : (<div></div>))}
+      </>
+    )
 
-      <div class="container">
-        <article class="grid-item grid-col-span-2">
-          <h2>{weatherData.name}</h2>
-          <p class="desc">{weatherData.weather[0].description} </p>
-        </article>
-        <article class="grid-item">
-          <img class="current-icon" src={`http://openweathermap.org/img/w/${weatherData.weather[0].icon}.png`}alt="weather status icon" />
-          <p class="temp">{weatherData.main.temp} °C</p>
-        </article>
-        <article class="grid-item  grid-col-span-2">
-          <h3>Päivä</h3>
-          <p class="text">11:11</p>
-        </article>
-        <article class="grid-item">
-          <p class="text">Wind: {weatherData.wind.speed} m/s</p>
-          <p class="text">Humidity: {weatherData.main.humidity} %</p>
-          <p class="text">Precipation (3h): </p>
-        </article>
-      </div>
-
-      <div className="forecast-container">
-        <article class="forecast-item">
-          <p>Kello</p>
-          <p>Ikoni</p>
-          <h4>LT</h4>
-          <div class="forecast-extra-info">
-            <p>Tuuli</p>
-            <p>Kosteus</p>
-            <p>5 mm</p>
-          </div>
-        </article>
-        <article class="forecast-item">
-          <p>Kello</p>
-          <p>Ikoni</p>
-          <h4>LT</h4>
-          <div class="forecast-extra-info">
-            <p>Tuuli</p>
-            <p>Kosteus</p>
-            <p>5 mm</p>
-          </div>
-        </article>
-        <article class="forecast-item">
-          <p>Kello</p>
-          <p>Ikoni</p>
-         <h4>LT</h4>
-          <div class="forecast-extra-info">
-            <p>Tuuli</p>
-            <p>Kosteus</p>
-            <p>5 mm</p>
-          </div>
-        </article>
-        <article class="forecast-item">
-          <p>Kello</p>
-          <p>Ikoni</p>
-          <h4>LT</h4>
-          <div class="forecast-extra-info">
-            <p>Tuuli</p>
-            <p>Kosteus</p>
-            <p>5 mm</p>
-          </div>
-        </article>
-        <article class="forecast-item">
-          <p>Kello</p>
-          <p>Ikoni</p>
-          <h4>LT</h4>
-          <div class="forecast-extra-info">
-            <p>Tuuli</p>
-            <p>Kosteus</p>
-            <p>5 mm</p>
-          </div>
-        </article>
-      </div>
-
-    </>
-  )
-  }
 }
-
 
 export default App;
