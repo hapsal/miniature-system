@@ -1,7 +1,6 @@
 const Forecast = ({forecastData}) => {
-    //console.log(forecastData)
     const forecastSliced = forecastData.list.slice(0, 5)
-
+    console.log(forecastData)
     return ( 
       <div className="forecast-container">
         {forecastSliced.map((item, i) => (
@@ -12,7 +11,7 @@ const Forecast = ({forecastData}) => {
             <div className="forecast-extra-info">
               <p>{item.wind.speed} m/s</p>
               <p>{item.main.humidity} %</p>
-              <p>0 mm</p>
+              {JSON.stringify(item.rain) ? <p>{item.rain["3h"]} mm</p> : <p>0 mm </p>}
             </div>
         </article>
         ))}

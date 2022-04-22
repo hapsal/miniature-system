@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import Navigation from './components/Navigation';
 import WeatherCard from './components/WeatherCard';
 import axios from 'axios';
+import AllWeatherCards from './components/AllWeatherCards';
+import Forecast from './components/Forecast';
 
 const App = () => {
   const [location, setLocation] = useState('')
@@ -10,33 +12,65 @@ const App = () => {
   const [loading, setLoading] = useState(true);
   const [currentWeatherdata, setcurrentWeatherdata] = useState([]);
   const [forecastData, setforecastData] = useState([]);
+  const [allWeathers, setAllWeathers] = useState([]);
+  const [allForecasts, setAllForecasts] = useState([])
 
-  const apiKey = ''
+  const apiKey = '3c231def2d9c228db88162e4bd850401'
 
   let currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?id=${location}&appid=${apiKey}&units=metric`
   let forecastWeatherUrl = `https://api.openweathermap.org/data/2.5/forecast?id=${location}&appid=${apiKey}&units=metric`
 
+  const fetchUrl = async (url) => {
+    const cityApi = await axios(url)
+    return cityApi.data
+  }                
+
+ const fetchCurrentAll = async (id) => {
+   const requests = id.map(async (i) => {
+     const url = `https://api.openweathermap.org/data/2.5/weather?id=${i}&appid=${apiKey}&units=metric`
+     const a = await fetchUrl(url);
+     return a;
+   })
+   return Promise.all(requests)
+ }
+ 
+ const fetchForecastAll = async (id) => {
+  const requests = id.map(async (i) => {
+    const url = `https://api.openweathermap.org/data/2.5/forecast?id=${i}&appid=${apiKey}&units=metric`
+    const a = await fetchUrl(url);
+    return a;
+  })
+  return Promise.all(requests)
+} 
+
   useEffect(() => {
-    const fetchApis = async () => {
-      Promise.all([await axios.get(currentWeatherUrl), await axios.get(forecastWeatherUrl)])
-        .then(responses => {
-          setcurrentWeatherdata(responses[0].data)
-          setforecastData(responses[1].data)
-          setError(null)
-        })
-        .catch(error => {
-          console.error(error)
-        })
-        setLoading(false)
-    }
-    fetchApis();
+    Promise.all([axios.get(currentWeatherUrl), axios.get(forecastWeatherUrl)])
+    .then(responses => {
+      setcurrentWeatherdata(responses[0].data)
+      setforecastData(responses[1].data)
+      setError(null)
+    })
+    .catch(error => {
+      console.error(error)
+    })
+    setLoading(false)
   }, [currentWeatherUrl, forecastWeatherUrl])
-  
-    const handleClick = (id) => {
-      if (id === 'allCities') {
-        console.log('helo')
+
+    const handleChange = (e) => {
+      if (e.target.value === 'allCities') {
+        handleAllFetch();
+      } else {
+        setLocation(e.target.value)
+        setAllWeathers([])
+        setAllForecasts([])
       }
-      setLocation(id)
+    }
+
+    const handleAllFetch = () => {
+      fetchCurrentAll(['650225', '634963', '655195','660129']).then(answer => setAllWeathers(answer))
+      fetchForecastAll(['650225', '634963', '655195','660129']).then(answer => setAllForecasts(answer))
+      setcurrentWeatherdata([])
+      setforecastData([])
     }
 
     return(
@@ -45,12 +79,16 @@ const App = () => {
           <h1>Säätutka</h1>
         </header>
 
+        <Navigation handleChange={handleChange} />
+        
+        <AllWeatherCards allData={allWeathers} allForecasts={allForecasts} />
+
+        {(typeof currentWeatherdata.main != 'undefined' ? (<><WeatherCard weatherData={currentWeatherdata} />
+        <Forecast forecastData={forecastData}/></>) : 
+        (<div></div>))}
+
         {loading && <div className='container'>Loading data...</div>}
         {error && (<div className='container'>`There is a problem fetching the data ${error}`</div>)}
-
-        <Navigation handleClick={handleClick} />
-
-        {(typeof currentWeatherdata.main != 'undefined' ? (<WeatherCard weatherData={currentWeatherdata} forecastData={forecastData}/>) : (<div></div>))}
       </>
     )
 

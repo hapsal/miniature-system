@@ -1,9 +1,8 @@
-import Forecast from './Forecast';
-
-const WeatherCard = ({weatherData, forecastData}) => {
+const WeatherCard = ({weatherData}) => {
     const currentDate = new Intl.DateTimeFormat('en-GB', {month: 'long', day: 'numeric'}).format(weatherData.dt * 1000)
     const currentTime = new Intl.DateTimeFormat('en-GB', {hour: 'numeric', minute: 'numeric'}).format(weatherData.dt * 1000)
     //console.log(weatherData)
+    //console.log(weatherData.rain['3h'])
     return (
       <div>
         <div className='container'>
@@ -22,13 +21,12 @@ const WeatherCard = ({weatherData, forecastData}) => {
           <article className="grid-item">
             <p className="text">Wind: {weatherData.wind.speed} m/s</p>
             <p className="text">Humidity: {weatherData.main.humidity} %</p>
-            <p className="text">Precipitation (3h): 0 mm</p>
+            {JSON.stringify(weatherData.rain) ? <p className="text">Precipitation (3h): {weatherData.rain["3h"]} mm</p> : <p className="text">Precipitation (3h): 0 mm</p>}
           </article>
         </div>
-          <Forecast forecastData={forecastData}/>
       </div> 
      );
 
 }
- 
+
 export default WeatherCard;

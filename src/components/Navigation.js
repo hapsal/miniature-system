@@ -1,13 +1,13 @@
-const Navigation = ({handleClick}) => {
+const Navigation = ({handleChange}) => {
     return ( 
         <div className='cities'>
-          <div>
-            <button onClick={() => handleClick('allCities')}>Kaikki kaupungit</button>
-            <button onClick={() => handleClick('634963')}>Tampere</button>
-            <button onClick={() => handleClick('655195')}>Jyväskylä</button>
-            <button onClick={() => handleClick('650225')}>Kuopio</button>
-            <button onClick={() => handleClick('660129')}>Espoo</button>
-          </div>
+            <select name="city" onChange={(handleChange)}>
+              <option value="allCities">Kaikki kaupungit</option>
+              <option value="634963">Tampere</option>
+              <option value="655195">Jyväskylä</option>
+              <option value="650225">Kuopio</option>
+              <option value="660129">Espoo</option>
+            </select>
         </div>
      );
 }
