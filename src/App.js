@@ -7,7 +7,7 @@ import AllWeatherCards from './components/AllWeatherCards';
 import Forecast from './components/Forecast';
 
 const App = () => {
-  const [location, setLocation] = useState('')
+  const [location, setLocation] = useState('634963')
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentWeatherdata, setcurrentWeatherdata] = useState([]);
@@ -15,10 +15,8 @@ const App = () => {
   const [allWeathers, setAllWeathers] = useState([]);
   const [allForecasts, setAllForecasts] = useState([])
 
-  const apiKey = '3c231def2d9c228db88162e4bd850401'
-
-  let currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?id=${location}&appid=${apiKey}&units=metric`
-  let forecastWeatherUrl = `https://api.openweathermap.org/data/2.5/forecast?id=${location}&appid=${apiKey}&units=metric`
+  let currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?id=${location}&appid=${process.env.REACT_APP_API_KEY}&units=metric`
+  let forecastWeatherUrl = `https://api.openweathermap.org/data/2.5/forecast?id=${location}&appid=${process.env.REACT_APP_API_KEY}&units=metric`
 
   const fetchUrl = async (url) => {
     const cityApi = await axios(url)
@@ -27,7 +25,7 @@ const App = () => {
 
  const fetchCurrentAll = async (id) => {
    const requests = id.map(async (i) => {
-     const url = `https://api.openweathermap.org/data/2.5/weather?id=${i}&appid=${apiKey}&units=metric`
+     const url = `https://api.openweathermap.org/data/2.5/weather?id=${i}&appid=${process.env.REACT_APP_API_KEY}&units=metric`
      const a = await fetchUrl(url);
      return a;
    })
@@ -36,7 +34,7 @@ const App = () => {
  
  const fetchForecastAll = async (id) => {
   const requests = id.map(async (i) => {
-    const url = `https://api.openweathermap.org/data/2.5/forecast?id=${i}&appid=${apiKey}&units=metric`
+    const url = `https://api.openweathermap.org/data/2.5/forecast?id=${i}&appid=${process.env.REACT_APP_API_KEY}&units=metric`
     const a = await fetchUrl(url);
     return a;
   })
@@ -51,6 +49,7 @@ const App = () => {
       setError(null)
     })
     .catch(error => {
+      setError(error)
       console.error(error)
     })
     setLoading(false)
