@@ -1,3 +1,7 @@
+# OpenWeatherMap Api
+
+Copy your OpenWeatherMap Api key to .env file to use the application
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

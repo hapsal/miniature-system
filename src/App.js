@@ -1,5 +1,5 @@
 import './App.css'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Navigation from './components/Navigation';
 import WeatherCard from './components/WeatherCard';
 import axios from 'axios';
@@ -14,6 +14,7 @@ const App = () => {
   const [forecastData, setforecastData] = useState([]);
   const [allWeathers, setAllWeathers] = useState([]);
   const [allForecasts, setAllForecasts] = useState([])
+  const [all, setAll] = useState(false)
 
   let currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?id=${location}&appid=${process.env.REACT_APP_API_KEY}&units=metric`
   let forecastWeatherUrl = `https://api.openweathermap.org/data/2.5/forecast?id=${location}&appid=${process.env.REACT_APP_API_KEY}&units=metric`
@@ -23,25 +24,30 @@ const App = () => {
     return cityApi.data
   }                
 
- const fetchCurrentAll = async (id) => {
+ const fetchCurrentAll = useCallback((id) => {
    const requests = id.map(async (i) => {
      const url = `https://api.openweathermap.org/data/2.5/weather?id=${i}&appid=${process.env.REACT_APP_API_KEY}&units=metric`
      const a = await fetchUrl(url);
      return a;
    })
    return Promise.all(requests)
- }
+ }, [])
  
- const fetchForecastAll = async (id) => {
+ const fetchForecastAll = useCallback((id) => {
   const requests = id.map(async (i) => {
     const url = `https://api.openweathermap.org/data/2.5/forecast?id=${i}&appid=${process.env.REACT_APP_API_KEY}&units=metric`
     const a = await fetchUrl(url);
     return a;
   })
   return Promise.all(requests)
-} 
+}, []) 
 
   useEffect(() => {
+    const handleAllFetch = () => {
+      fetchCurrentAll(['650225', '634963', '655195','660129']).then(answer => setAllWeathers(answer))
+      fetchForecastAll(['650225', '634963', '655195','660129']).then(answer => setAllForecasts(answer))
+    }
+
     Promise.all([axios.get(currentWeatherUrl), axios.get(forecastWeatherUrl)])
     .then(responses => {
       setcurrentWeatherdata(responses[0].data)
@@ -52,24 +58,21 @@ const App = () => {
       setError(error)
       console.error(error)
     })
+    handleAllFetch()
     setLoading(false)
-  }, [currentWeatherUrl, forecastWeatherUrl])
+  }, [currentWeatherUrl, forecastWeatherUrl, fetchCurrentAll, fetchForecastAll])
 
     const handleChange = (e) => {
       if (e.target.value === 'allCities') {
-        handleAllFetch();
+        setcurrentWeatherdata([])
+        setforecastData([])
+        setAll(true)
       } else {
         setLocation(e.target.value)
         setAllWeathers([])
         setAllForecasts([])
+        setAll(false)
       }
-    }
-
-    const handleAllFetch = () => {
-      fetchCurrentAll(['650225', '634963', '655195','660129']).then(answer => setAllWeathers(answer))
-      fetchForecastAll(['650225', '634963', '655195','660129']).then(answer => setAllForecasts(answer))
-      setcurrentWeatherdata([])
-      setforecastData([])
     }
 
     return(
@@ -80,7 +83,7 @@ const App = () => {
 
         <Navigation handleChange={handleChange} />
         
-        <AllWeatherCards allData={allWeathers} allForecasts={allForecasts} />
+        {all ? <AllWeatherCards allData={allWeathers} allForecasts={allForecasts} /> : <div></div>}
 
         {(typeof currentWeatherdata.main != 'undefined' ? (<><WeatherCard weatherData={currentWeatherdata} />
         <Forecast forecastData={forecastData}/></>) : 

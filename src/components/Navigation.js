@@ -1,7 +1,9 @@
 const Navigation = ({handleChange}) => {
+  /** Navigaatio olisi parempi olla toinen */
     return ( 
         <div className='cities'>
-            <select name="city" onChange={(handleChange)}>
+            <select defaultValue="" name="city" onChange={(handleChange)}>
+              <option value="" hidden disabled></option>
               <option value="allCities">Kaikki kaupungit</option>
               <option value="634963">Tampere</option>
               <option value="655195">Jyväskylä</option>

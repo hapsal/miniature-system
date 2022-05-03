@@ -1,8 +1,4 @@
 const WeatherCard = ({weatherData}) => {
-    const currentDate = new Intl.DateTimeFormat('en-GB', {month: 'long', day: 'numeric'}).format(weatherData.dt * 1000)
-    const currentTime = new Intl.DateTimeFormat('en-GB', {hour: 'numeric', minute: 'numeric'}).format(weatherData.dt * 1000)
-    //console.log(weatherData)
-    //console.log(weatherData.rain['3h'])
     return (
       <div>
         <div className='container'>
@@ -15,8 +11,8 @@ const WeatherCard = ({weatherData}) => {
             <p className="temp">{Math.round(weatherData.main.temp)} °C</p>
           </article>
           <article className="grid-item  grid-col-span-2">
-            <h3>{currentDate}</h3>
-            <p className="text">{currentTime}</p>
+            <h3>{new Intl.DateTimeFormat('en-GB', {month: 'long', day: 'numeric'}).format(weatherData.dt * 1000)}</h3>
+            <p className="text">{new Intl.DateTimeFormat('en-GB', {hour: 'numeric', minute: 'numeric'}).format(weatherData.dt * 1000)}</p>
           </article>
           <article className="grid-item">
             <p className="text">Wind: {weatherData.wind.speed} m/s</p>

@@ -1,6 +1,5 @@
 const Forecast = ({forecastData}) => {
     const forecastSliced = forecastData.list.slice(0, 5)
-    console.log(forecastData)
     return ( 
       <div className="forecast-container">
         {forecastSliced.map((item, i) => (
